@@ -18,7 +18,6 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public int regist(User user) {
         int i = userMapper.insert(user);
-        i = i / 0;
         return i;
     }
 
