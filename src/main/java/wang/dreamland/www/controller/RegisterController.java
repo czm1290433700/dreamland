@@ -13,6 +13,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import wang.dreamland.www.common.CodeCaptchaServlet;
 import wang.dreamland.www.common.MD5Util;
+import wang.dreamland.www.dao.UserContentMapper;
+import wang.dreamland.www.dao.UserMapper;
 import wang.dreamland.www.entity.User;
 import wang.dreamland.www.mail.SendEmail;
 import wang.dreamland.www.service.RoleService;
