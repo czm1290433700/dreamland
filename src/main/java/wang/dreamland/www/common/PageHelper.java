@@ -86,7 +86,7 @@ public class PageHelper implements Interceptor {
 			// 重设分页参数里的总页数等
 			setPageParameter(sql, connection, mappedStatement, boundSql, page);
 
-			System.out.println("total:" + page.getPages());
+			System.out.println("totalmao:" + page.getPages());
 
 			// 如果当前页大于总页数，则等于总页数
 			if (page.getPageNum() > page.getPages()) {
