@@ -3,7 +3,9 @@ package wang.dreamland.www.entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.util.Date;
+import java.util.List;
 
 public class Comment {
     @Id//标识主键
@@ -23,6 +25,17 @@ public class Comment {
     private Integer upvote;
 
     private String comContent;
+
+    //@Transient表示该属性并非一个到数据库表的字段的映射,ORM框架将忽略该属性.
+    @Transient
+    private User user;
+
+    @Transient
+    private User byUser;
+
+    @Transient
+    private List<Comment> comList;
+
 
     public Long getId() {
         return id;
@@ -86,5 +99,29 @@ public class Comment {
 
     public void setComContent(String comContent) {
         this.comContent = comContent == null ? null : comContent.trim();
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public User getByUser() {
+        return byUser;
+    }
+
+    public void setByUser(User byUser) {
+        this.byUser = byUser;
+    }
+
+    public List<Comment> getComList() {
+        return comList;
+    }
+
+    public void setComList(List<Comment> comList) {
+        this.comList = comList;
     }
 }

@@ -18,39 +18,30 @@ public class CommentServiceImpl implements CommentService {
     @Autowired
     private CommentMapper commentMapper;
 
-
     public int add(Comment comment) {
-        return commentMapper.insert(comment);
+        return commentMapper.insertComment(comment);
+    }
+
+    public List<Comment> findAll(Long cid) {
+        return commentMapper.selectAll(cid);
+    }
+
+    public List<Comment> findAllFirstComment(Long cid) {
+        return commentMapper.findAllFirstComment(cid);
+    }
+
+    public List<Comment> findAllChildrenComment(Long cid, String children) {
+        return commentMapper.findAllChildrenComment(cid,children);
     }
 
     public void update(Comment comment) {
         commentMapper.updateByPrimaryKey( comment );
     }
 
-    public List<Comment> findAll(Long cid) {
-        Comment comment = new Comment();
-        comment.setConId(cid);
-        return commentMapper.select(comment);
-    }
-
     public Comment findById(Long id) {
         Comment comment = new Comment();
         comment.setId( id );
         return commentMapper.selectOne( comment );
-    }
-
-    public List<Comment> findAllFirstComment(Long cid)
-    {
-        Comment comment = new Comment();
-        comment.setConId(cid);
-        return commentMapper.select(comment);
-    }
-
-    public List<Comment> findAllChildrenComment(Long cid, String children) {
-        Comment comment = new Comment();
-        comment.setConId(cid);
-        comment.setChildren(children);
-        return commentMapper.select(comment);
     }
 
     public void deleteById(Long id) {
