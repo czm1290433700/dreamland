@@ -101,4 +101,15 @@ public class UserContentServiceImpl implements UserContentService {
         Page endPage = PageHelper.endPage();//分页结束
         return endPage;
     }
+
+    @Override
+    public Page<UserContent> findPersonal(Long uid, Integer pageNum, Integer pageSize) {
+        UserContent userContent = new UserContent();
+        userContent.setuId(uid);
+        userContent.setPersonal("1");
+        PageHelper.startPage(pageNum, pageSize);//开始分页
+        userContentMapper.select(userContent);
+        Page endPage = PageHelper.endPage();//分页结束
+        return endPage;
+    }
 }

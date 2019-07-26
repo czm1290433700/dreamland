@@ -88,4 +88,27 @@ public class PersonalController extends BaseController{
         map.put("pageCate",pageCate);
         return map;
     }
+
+    /**
+     * 根据用户id查询私密梦
+     * @param model
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @RequestMapping("/findPersonal")
+    @ResponseBody
+    public Map<String,Object> findPersonal(Model model,@RequestParam(value = "pageNum",required = false) Integer pageNum , @RequestParam(value = "pageSize",required = false) Integer pageSize) {
+
+        Map map = new HashMap<String,Object>(  );
+        User user = (User)getSession().getAttribute("user");
+        if(user==null) {
+            map.put("page2","fail");
+            return map;
+        }
+        pageSize = 4; //默认每页显示4条数据
+        PageHelper.Page<UserContent> page = userContentService.findPersonal(user.getId(),pageNum,pageSize);
+        map.put("page2",page);
+        return map;
+    }
 }
