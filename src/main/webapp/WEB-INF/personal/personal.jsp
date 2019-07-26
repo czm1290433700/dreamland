@@ -394,13 +394,11 @@
             <font color="white" size="2.8" face="黑体" style="margin-top: 10px;margin-left: 10px">梦分类</font>
         </div>
         <div class="list-group">
-            <a href="#" class="list-group-item active" id="l1">惊悚梦(10)</a>
-            <a href="#" class="list-group-item" id="l2">爱情梦(0)</a>
-            <a href="#" class="list-group-item" id="l3">武侠梦(3)</a>
-            <a href="#" class="list-group-item" id="l4">美食梦(7)</a>
-            <a href="#" class="list-group-item" id="l5">工作梦(34)</a>
-            <a href="#" class="list-group-item" id="l6">动物梦(23)</a>
-            <a href="#" class="list-group-item" id="l7">其他梦(29)</a>
+            <a onclick="changeToActive('category_x',null,null)" class="list-group-item active" id="category_x">全部(${page.total})</a>
+            <c:forEach items="${categorys}" var="category" varStatus="sta">
+                <a onclick="changeToActive('category_${sta.index}','${category.category}',null)" class="list-group-item" id="category_${sta.index}">${category.category}(${category.num})</a>
+            </c:forEach>
+
         </div>
     </div>
 
@@ -982,6 +980,76 @@
 
 </body>
 <script>
+    //梦分类点击事件
+    function changeToActive(id,category,pageNum) {
+        var ulist_id = "";
+        if(typeof (id)=="object"){
+            ulist_id = id.id;
+        }else{
+            ulist_id = id;
+        }
+        $("ul").remove("#release-dreamland-ul");
+        $("ul").remove("#release-dreamland-fy");
+        $(".list-group-item").attr("class","list-group-item");
+        $("#"+ulist_id).attr("class","list-group-item active");
+        $.ajax({
+            type: 'post',
+            url: '/findByCategory',
+            data: {"category": category,"pageNum":pageNum},
+            dataType: 'json',
+            success: function (data) {
+                var pageCate = data["pageCate"];
+                if(pageCate=="fail"){
+                    window.location.href = "/login.jsp";
+                }else{
 
+                    var ucList = pageCate.result;
+                    var startHtml = "<ul style='font-size: 12px' id='release-dreamland-ul'>";
+                    var endHtml = "</ul>";
+                    if(ucList!=null){
+                        $(ucList).each(function () {
+                            var contHtml = "<li class='dreamland-fix'><a>"+this.title+"</a> <span class='bar-read'>评论 ("+this.commentNum+")</span>"
+                                +"<span class='bar-commend'>"+this.upvote+"人阅读</span><hr/></li>";
+                            startHtml = startHtml + contHtml;
+                        });
+                        var okHtml = startHtml + endHtml;
+
+                        //分页
+                        var stPageHtml = " <ul id='release-dreamland-fy' class='pager pager-loose'>";
+                        if(pageCate.pageNum<=1){
+                            stPageHtml = stPageHtml + " <li class='previous'><a href='javascript:void(0);'>« 上一页</a></li>";
+                        }else if(pageCate.pageNum>1){
+                            var num = parseInt(pageCate.pageNum) -1;
+                            stPageHtml = stPageHtml + "<li class='previous'><a onclick='changeToActive("+ulist_id+",\""+category+"\","+num+")'>« 上一页</a></li>";
+                        }
+
+                        var foHtml = "";
+                        for(var i = 1 ;i<= pageCate.pages;i++){
+                            if(pageCate.pageNum==i){
+                                foHtml = foHtml+ "<li class='active'><a href='javascript:void(0);'>"+i+"</a></li>";
+                            }else{
+                                foHtml = foHtml+ "<li ><a onclick='changeToActive("+ulist_id+",\""+category+"\","+i+")'>"+i+"</a></li>";
+                            }
+                        }
+
+                        var teHtml = "";
+                        if(pageCate.pageNum>=pageCate.pages){
+                            teHtml = " <li><a href='javascript:void(0);'>下一页 »</a></li>";
+                        }else if(pageCate.pageNum<pageCate.pages){
+                            var num = parseInt(pageCate.pageNum) + 1;
+                            teHtml = "<li><a onclick='changeToActive("+ulist_id+",\""+category+"\","+num+")'>下一页 »</a></li>";
+                        }
+                        var endPageHtml = "</ul>";
+
+                        var pageOkHtml = stPageHtml + foHtml + teHtml +endPageHtml;
+                    }
+
+                    $("#release-dreamland").append(okHtml);
+                    $("#release-dreamland-div").append(pageOkHtml);
+                }
+            }
+
+        });
+    }
 </script>
 </html>

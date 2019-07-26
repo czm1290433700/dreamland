@@ -1,5 +1,6 @@
 package wang.dreamland.www.service.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
@@ -82,5 +83,22 @@ public class UserContentServiceImpl implements UserContentService {
         userContentMapper.updateByPrimaryKeySelective( content );
     }
 
+    @Override
+    public List<UserContent> findCategoryByUid(Long uid) {
+        return userContentMapper.findCategoryByUid(uid);
+    }
 
+    @Override
+    public Page<UserContent> findByCategory(String category,Long uid,Integer pageNum, Integer pageSize) {
+        UserContent userContent = new UserContent();
+        if(StringUtils.isNotBlank(category) && !"null".equals(category)){
+            userContent.setCategory(category);
+        }
+        userContent.setuId(uid);
+        userContent.setPersonal("0");
+        PageHelper.startPage(pageNum, pageSize);//开始分页
+        userContentMapper.select(userContent);
+        Page endPage = PageHelper.endPage();//分页结束
+        return endPage;
+    }
 }
