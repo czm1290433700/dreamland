@@ -16,4 +16,10 @@ public interface UserContentMapper extends Mapper<UserContent> {
      * @return
      */
     List<UserContent> findCategoryByUid(@Param("uid")long uid);
+    /**
+     *  插入文章并返回主键id 返回类型只是影响行数  id在UserContent对象中
+     * @param userContent
+     * @return
+     */
+    int inserContent(UserContent userContent);
 }

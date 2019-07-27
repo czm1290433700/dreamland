@@ -25,7 +25,7 @@ public interface UserContentService {
      * 添加文章
      * @param content
      */
-    void addContent(UserContent content);
+    int addContent(UserContent content);
 
     /**
      * 根据用户id查询文章集合
@@ -76,4 +76,10 @@ public interface UserContentService {
      * @return
      */
     PageHelper.Page<UserContent> findPersonal(Long uid ,Integer pageNum, Integer pageSize);
+
+    /**
+     * 根据文章id删除文章
+     * @param cid
+     */
+    void deleteById(Long cid);
 }

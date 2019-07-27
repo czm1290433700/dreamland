@@ -720,9 +720,9 @@
             <ul style="font-size: 12px" id="update-dreamland-ul">
                 <c:forEach var="cont" items="${page.result}" varStatus="i">
                     <li class="dreamland-fix">
-                        <a>${cont.title}</a>
-                        <span class="bar-delete">删除</span>
-                        <span class="bar-update">修改</span>
+                        <a href="${ctx}/watch?cid=${cont.id}">${cont.title}</a>
+                        <a href="${ctx}/deleteContent?cid=${cont.id}"><span class="bar-delete">删除</span></a>
+                        <a href="${ctx}/writedream?cid=${cont.id}"><span class="bar-update">修改</span></a>
 
 
                         <hr/>
@@ -766,9 +766,9 @@
             <ul style="font-size: 12px" id="personal-dreamland-ul">
                 <c:forEach var="cont" items="${page2.result}" varStatus="i">
                     <li class="dreamland-fix">
-                        <a>${cont.title}</a>
-                        <span class="bar-delete">删除</span>
-                        <span class="bar-update">修改</span>
+                        <a href="${ctx}/watch?cid=${cont.id}">${cont.title}</a>
+                        <a href="${ctx}/deleteContent?cid=${cont.id}"><span class="bar-delete">删除</span></a>
+                        <a href="${ctx}/writedream?cid=${cont.id}"><span class="bar-update">修改</span></a>
                         <hr/>
                     </li>
                 </c:forEach>
@@ -1225,5 +1225,12 @@
             }
         });
     }
+
+    $(function () {
+        var val = "${manage}";
+        if(val=="manage"){
+            manage_dreamland();
+        }
+    });
 </script>
 </html>

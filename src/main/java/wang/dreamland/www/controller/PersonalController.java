@@ -1,5 +1,6 @@
 package wang.dreamland.www.controller;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import wang.dreamland.www.common.PageHelper;
 import wang.dreamland.www.entity.User;
 import wang.dreamland.www.entity.UserContent;
+import wang.dreamland.www.service.CommentService;
+import wang.dreamland.www.service.UpvoteService;
 import wang.dreamland.www.service.UserContentService;
 
 import java.util.HashMap;
@@ -31,8 +34,12 @@ public class PersonalController extends BaseController{
      */
     @RequestMapping("/list")
     public String findList(Model model, @RequestParam(value = "id",required = false) String id,
+                           @RequestParam(value = "manage",required = false) String manage ,
                            @RequestParam(value = "pageNum",required = false) Integer pageNum ,
                            @RequestParam(value = "pageSize",required = false) Integer pageSize) {
+        if(StringUtils.isNotBlank(manage)){
+            model.addAttribute("manage",manage);
+        }
         User user = (User)getSession().getAttribute("user");
         UserContent content = new UserContent();
         UserContent uc = new UserContent();
@@ -110,5 +117,24 @@ public class PersonalController extends BaseController{
         PageHelper.Page<UserContent> page = userContentService.findPersonal(user.getId(),pageNum,pageSize);
         map.put("page2",page);
         return map;
+    }
+
+    @Autowired
+    private CommentService commentService;
+
+    @Autowired
+    private UpvoteService upvoteService;
+    @RequestMapping("/deleteContent")
+    public String deleteContent(Model model, @RequestParam(value = "cid",required = false) Long cid) {
+
+        User user = (User)getSession().getAttribute("user");
+        if(user==null) {
+            return "../login";
+        }
+        //还未实现
+        //commentService.deleteByContentId(cid);
+        //upvoteService.deleteByContentId(cid);
+        userContentService.deleteById(cid);
+        return "redirect:/list?manage=manage";
     }
 }

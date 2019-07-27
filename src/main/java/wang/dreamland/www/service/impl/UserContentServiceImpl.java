@@ -23,8 +23,8 @@ public class UserContentServiceImpl implements UserContentService {
     private UserContentMapper userContentMapper;
     @Autowired
     private CommentMapper commentMapper;
-    public void addContent(UserContent content) {
-        userContentMapper.insert( content );
+    public int addContent(UserContent content) {
+        return userContentMapper.inserContent(content);
     }
 
     public List<UserContent> findByUserId(Long uid) {
@@ -111,5 +111,10 @@ public class UserContentServiceImpl implements UserContentService {
         userContentMapper.select(userContent);
         Page endPage = PageHelper.endPage();//分页结束
         return endPage;
+    }
+
+    @Override
+    public void deleteById(Long cid) {
+        userContentMapper.deleteByPrimaryKey(cid);
     }
 }
