@@ -40,6 +40,11 @@ public class BaseController {
     @Autowired
     private UserService userService;
 
+    public Page<UserContent> findAll(Integer pageNum, Integer pageSize){
+        Page<UserContent> page = userContentService.findAll(pageNum ,pageSize);
+        return page;
+    }
+
     public boolean isLogin(Long id){
         if(id != null ){
             User user = userService.findById( id );

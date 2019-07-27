@@ -82,4 +82,12 @@ public interface UserContentService {
      * @param cid
      */
     void deleteById(Long cid);
+
+    /**
+     * 根据发布时间倒排序并分页
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    PageHelper.Page<UserContent> findAll(Integer pageNum, Integer pageSize);
 }

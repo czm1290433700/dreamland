@@ -7,15 +7,15 @@
 <head>
     <meta charset="UTF-8">
     <title>个人空间</title>
-    <link href="${ctx}/css/bootstrap/css/bootstrap.css" rel="stylesheet"/>
-    <link href="${ctx}/css/bootstrap/css/bootstrap-theme.css" rel="stylesheet"/>
+    <link href="${ctx}/css/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="${ctx}/css/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet"/>
 
-    <link href="${ctx}/css/zui/css/zui.css" rel="stylesheet"/>
-    <link href="${ctx}/css/zui/css/zui-theme.css" rel="stylesheet"/>
+    <link href="${ctx}/css/zui/css/zui.min.css" rel="stylesheet"/>
+    <link href="${ctx}/css/zui/css/zui-theme.min.css" rel="stylesheet"/>
     <script type="text/javascript" src="${ctx}/js/jquery-3.2.1.min.js"></script>
-    <script type="text/javascript" src="${ctx}/css/bootstrap/js/bootstrap.js"></script>
-    <script type="text/javascript" src="${ctx}/css/zui/js/zui.js"></script>
-    <script src="${ctx}/css/zui/lib/kindeditor/kindeditor.js"></script>
+    <script type="text/javascript" src="${ctx}/css/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="${ctx}/css/zui/js/zui.min.js"></script>
+    <script src="${ctx}/css/zui/lib/kindeditor/kindeditor.min.js"></script>
     <style>
         body,html{
             background-color: #EBEBEB;
@@ -71,7 +71,7 @@
             display: block;
             width: 280px;
             min-height: 550px;
-            margin-top: 750px;
+            margin-top: 510px;
             position: absolute;
             background-color: white;
         }
@@ -272,6 +272,15 @@
             float: right;
             color: grey;
         }
+        #release-dreamland a{
+            text-decoration:none;
+        }
+        #update-dreamland a{
+            text-decoration:none;
+        }
+        #personal-dreamland a{
+            text-decoration:none;
+        }
     </style>
     <!--[if lt IE 9]>
     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -312,7 +321,7 @@
             </ul>
 
             <ul class="nav navbar-nav">
-                <li><a href="${ctx}/writedream?id=${user.id}">写梦</a></li>
+                <li><a href="${ctx}/writedream">写梦</a></li>
             </ul>
             <ul class="nav navbar-nav" style="margin-left: 680px">
                 <li><a href="${ctx}/list?id=${user.id}">${user.nickName}
@@ -331,7 +340,7 @@
         <input type="hidden" name="creator" value="13149346">
         <div class="avatar-container-80 center">
             <a href="#" title="${user.nickName}" class="avatar" target="_blank">
-                <img src="images/icon_m.jpg" width="80" height="80" alt="">
+                <img src="${user.imgUrl}" width="80" height="80" alt="">
             </a>
 
         </div>
@@ -340,7 +349,7 @@
         <div class="author-info">
             <p class="author-info-title">
                 <a href="#" title="${user.nickName}"
-                   class="title-content" target="_blank">小黑
+                   class="title-content" target="_blank">${user.nickName}
                 </a>
             </p>
             <div class="position-info">
@@ -402,7 +411,7 @@
         </div>
     </div>
 
-    <div class="dreamland-see">
+    <div class="dreamland-see" id="dreamland-see" style="margin-top: 510px">
         <div class="customer" style="height: 40px;background-color:#262626;line-height: 40px ">
             <font color="white" size="2.8" face="黑体" style="margin-top: 10px;margin-left: 10px">关注(8人)</font>
         </div>
@@ -673,10 +682,10 @@
         </div>
 
         <div id="release-dreamland" style="height: 700px;margin-top: 50px;width: 100%">
-            <ul style="font-size: 12px">
+            <ul style="font-size: 12px" id="release-dreamland-ul">
                 <c:forEach var="cont" items="${page.result}" varStatus="i">
                 <li class="dreamland-fix">
-                    <a>${cont.title}</a>
+                    <a href="${ctx}/watch?cid=${cont.id}">${cont.title}</a>
                     <span class="bar-read">评论 (${cont.commentNum})</span>
                     <span class="bar-commend">${cont.upvote}人阅读</span>
 
@@ -687,21 +696,21 @@
 
             </ul>
 
-            <div style="float: left;position: absolute;bottom: 1080px;margin-left: 20px">
+            <div id="release-dreamland-div" style="float: left;position: absolute;bottom: 1080px;margin-left: 20px">
 
-                <ul class="pager pager-loose">
+                <ul class="pager pager-loose" id="release-dreamland-fy">
                     <c:if test="${page.pageNum <= 1}">
                         <li class="previous"><a href="javascript:void(0);">« 上一页</a></li>
                     </c:if>
                     <c:if test="${page.pageNum > 1}">
-                        <li class="previous"><a href="${ctx}/list?pageNum=${page.pageNum-1}&&id=${user.id}">« 上一页</a></li>
+                        <li class="previous" id=""><a onclick="changeToActive('category_x',null,${page.pageNum - 1})">« 上一页</a></li>
                     </c:if>
-                    <c:forEach begin="1" end="${page.pages}" var="pn">
+                    <c:forEach begin="${page.startPage}" end="${page.endPage}" var="pn">
                         <c:if test="${page.pageNum==pn}">
                             <li class="active"><a href="javascript:void(0);">${pn}</a></li>
                         </c:if>
                         <c:if test="${page.pageNum!=pn}">
-                            <li ><a href="${ctx}/list?pageNum=${pn}&&id=${user.id}">${pn}</a></li>
+                            <li ><a onclick="changeToActive('category_x',null,${pn})">${pn}</a></li>
                         </c:if>
                     </c:forEach>
 
@@ -709,7 +718,7 @@
                         <li><a href="javascript:void(0);">下一页 »</a></li>
                     </c:if>
                     <c:if test="${page.pageNum<page.pages}">
-                        <li><a href="${ctx}/list?pageNum=${page.pageNum+1}&&id=${user.id}">下一页 »</a></li>
+                        <li><a onclick="changeToActive('category_x',null,${page.pageNum + 1})">下一页 »</a></li>
                     </c:if>
 
                 </ul>
@@ -719,14 +728,12 @@
         <div id="update-dreamland" style="height: 700px;margin-top: 50px;width: 100%;display: none" >
             <ul style="font-size: 12px" id="update-dreamland-ul">
                 <c:forEach var="cont" items="${page.result}" varStatus="i">
-                    <li class="dreamland-fix">
-                        <a href="${ctx}/watch?cid=${cont.id}">${cont.title}</a>
-                        <a href="${ctx}/deleteContent?cid=${cont.id}"><span class="bar-delete">删除</span></a>
-                        <a href="${ctx}/writedream?cid=${cont.id}"><span class="bar-update">修改</span></a>
-
-
-                        <hr/>
-                    </li>
+                <li class="dreamland-fix">
+                    <a href="${ctx}/watch?cid=${cont.id}">${cont.title}</a>
+                    <a href="${ctx}/deleteContent?cid=${cont.id}"><span class="bar-delete">删除</span></a>
+                    <a href="${ctx}/writedream?cid=${cont.id}"><span class="bar-update">修改</span></a>
+                    <hr/>
+                </li>
                 </c:forEach>
 
             </ul>
@@ -740,7 +747,7 @@
                     <c:if test="${page.pageNum > 1}">
                         <li class="previous"><a onclick="turnPage(${page.pageNum-1})">« 上一页</a></li>
                     </c:if>
-                    <c:forEach begin="1" end="${page.pages}" var="pn">
+                    <c:forEach begin="${page.startPage}" end="${page.endPage}" var="pn">
                         <c:if test="${page.pageNum==pn}">
                             <li class="active"><a href="javascript:void(0);">${pn}</a></li>
                         </c:if>
@@ -765,12 +772,12 @@
         <div id="personal-dreamland" style="height: 700px;margin-top: 50px;width: 100%;display: none">
             <ul style="font-size: 12px" id="personal-dreamland-ul">
                 <c:forEach var="cont" items="${page2.result}" varStatus="i">
-                    <li class="dreamland-fix">
-                        <a href="${ctx}/watch?cid=${cont.id}">${cont.title}</a>
-                        <a href="${ctx}/deleteContent?cid=${cont.id}"><span class="bar-delete">删除</span></a>
-                        <a href="${ctx}/writedream?cid=${cont.id}"><span class="bar-update">修改</span></a>
-                        <hr/>
-                    </li>
+                <li class="dreamland-fix">
+                    <a href="${ctx}/watch?cid=${cont.id}">${cont.title}</a>
+                    <a href="${ctx}/deleteContent?cid=${cont.id}"><span class="bar-delete">删除</span></a>
+                    <a href="${ctx}/writedream?cid=${cont.id}"><span class="bar-update">修改</span></a>
+                    <hr/>
+                </li>
                 </c:forEach>
 
             </ul>
@@ -783,7 +790,7 @@
                     <c:if test="${page2.pageNum > 1}">
                         <li class="previous"><a onclick="personTurnPage(${page2.pageNum-1})">« 上一页</a></li>
                     </c:if>
-                    <c:forEach begin="1" end="${page2.pages}" var="pn">
+                    <c:forEach begin="${page2.startPage}" end="${page2.endPage}" var="pn">
                         <c:if test="${page2.pageNum==pn}">
                             <li class="active"><a href="javascript:void(0);">${pn}</a></li>
                         </c:if>
@@ -812,11 +819,11 @@
                 <span style="color:#B22222 ">hot</span>
             </div>
 
-            <div style="height: 700px;margin-top: 30px;width: 100%">
-                <ul style="font-size: 12px">
+            <div style="height: 700px;margin-top: 30px;width: 100%" id="hot-dreamland">
+                <ul style="font-size: 12px" id="hot-dreamland-ul">
                     <c:forEach var="cont" items="${hotPage.result}" varStatus="i">
                     <li class="dreamland-fix">
-                        <a>${cont.title}</a>
+                        <a href="${ctx}/watch?cid=${cont.id}">${cont.title}</a>
                         <span class="bar-read">评论 (${cont.commentNum} )</span>
                         <span class="bar-commend">${cont.upvote}人阅读</span>
 
@@ -829,20 +836,20 @@
                 </ul>
             </div>
 
-            <div style="float: left;position: absolute;bottom: 10px;margin-left: 20px">
-            <ul class="pager pager-loose">
+            <div style="float: left;position: absolute;bottom: 10px;margin-left: 20px" id="hot-dreamland-div">
+            <ul class="pager pager-loose" id="hot-dreamland-fy">
                 <c:if test="${hotPage.pageNum <= 1}">
                     <li class="previous"><a href="javascript:void(0);">« 上一页</a></li>
                 </c:if>
                 <c:if test="${hotPage.pageNum > 1}">
-                    <li class="previous"><a href="${ctx}/list?pageNum=${hotPage.pageNum-1}&&id=${user.id}">« 上一页</a></li>
+                    <li class="previous"><a onclick="hotTurnPage(${hotPage.pageNum-1})">« 上一页</a></li>
                 </c:if>
-                <c:forEach begin="1" end="${hotPage.pages}" var="pn">
+                <c:forEach begin="${hotPage.startPage}" end="${hotPage.endPage}" var="pn">
                     <c:if test="${hotPage.pageNum==pn}">
                         <li class="active"><a href="javascript:void(0);">${pn}</a></li>
                     </c:if>
                     <c:if test="${hotPage.pageNum!=pn}">
-                        <li ><a href="${ctx}/list?pageNum=${pn}&&id=${user.id}">${pn}</a></li>
+                        <li ><a onclick="hotTurnPage(${pn})">${pn}</a></li>
                     </c:if>
                 </c:forEach>
 
@@ -850,7 +857,7 @@
                     <li><a href="javascript:void(0);">下一页 »</a></li>
                 </c:if>
                 <c:if test="${hotPage.pageNum<hotPage.pages}">
-                    <li><a href="${ctx}/list?pageNum=${hotPage.pageNum+1}&&id=${user.id}">下一页 »</a></li>
+                    <li><a onclick="hotTurnPage(${hotPage.pageNum+1})">下一页 »</a></li>
                 </c:if>
 
             </ul>
@@ -861,7 +868,7 @@
 <!--右侧-->
 
 <div class="ibx-advice" onmouseover="changeBackColor();" onmouseout="back2color();">
-    <a href="${ctx}/writedream?id=${user.id}"><span class="glyphicon glyphicon-edit" aria-hidden="true" style="color:#1b1b1b;font-size:30px;" title="写梦"></span></a>
+    <a href="${ctx}/writedream"><span class="glyphicon glyphicon-edit" aria-hidden="true" style="color:#1b1b1b;font-size:30px;" title="写梦"></span></a>
 </div>
 
 <!--底部-->
@@ -980,75 +987,137 @@
 
 </body>
 <script>
+    //页面加载完成函数
+    $(function () {
+        var num = "${categorys.size()}";
+        var tomVal = document.getElementById("dreamland-see").style.marginTop;
+        var hgt = parseInt(num)*40+parseInt(tomVal.split("px")[0]);
+        document.getElementById("dreamland-see").style.marginTop = hgt + "px";
+
+       var val = "${manage}";
+       if(val=="manage"){
+           manage_dreamland();
+       }
+    });
+
     //梦分类点击事件
-    function changeToActive(id,category,pageNum) {
-        var ulist_id = "";
-        if(typeof (id)=="object"){
-            ulist_id = id.id;
-        }else{
-            ulist_id = id;
-        }
-        $("ul").remove("#release-dreamland-ul");
-        $("ul").remove("#release-dreamland-fy");
-        $(".list-group-item").attr("class","list-group-item");
-        $("#"+ulist_id).attr("class","list-group-item active");
-        $.ajax({
-            type: 'post',
-            url: '/findByCategory',
-            data: {"category": category,"pageNum":pageNum},
-            dataType: 'json',
-            success: function (data) {
-                var pageCate = data["pageCate"];
-                if(pageCate=="fail"){
-                    window.location.href = "/login.jsp";
-                }else{
+   function changeToActive(id,category,pageNum) {
+       var ulist_id = "";
+       if(typeof (id)=="object"){
+           ulist_id = id.id;
+       }else{
+           ulist_id = id;
+       }
+       $("ul").remove("#release-dreamland-ul");
+       $("ul").remove("#release-dreamland-fy");
+       $(".list-group-item").attr("class","list-group-item");
+       $("#"+ulist_id).attr("class","list-group-item active");
+       $.ajax({
+           type: 'post',
+           url: '/findByCategory',
+           data: {"category": category,"pageNum":pageNum},
+           dataType: 'json',
+           success: function (data) {
+               var pageCate = data["pageCate"];
+               if(pageCate=="fail"){
+                   window.location.href = "/login.jsp";
+               }else{
 
-                    var ucList = pageCate.result;
-                    var startHtml = "<ul style='font-size: 12px' id='release-dreamland-ul'>";
-                    var endHtml = "</ul>";
-                    if(ucList!=null){
-                        $(ucList).each(function () {
-                            var contHtml = "<li class='dreamland-fix'><a>"+this.title+"</a> <span class='bar-read'>评论 ("+this.commentNum+")</span>"
-                                +"<span class='bar-commend'>"+this.upvote+"人阅读</span><hr/></li>";
-                            startHtml = startHtml + contHtml;
-                        });
-                        var okHtml = startHtml + endHtml;
+               var ucList = pageCate.result;
+               var startHtml = "<ul style='font-size: 12px' id='release-dreamland-ul'>";
+               var endHtml = "</ul>";
+               if(ucList!=null){
+                  $(ucList).each(function () {
+                      var contHtml = "<li class='dreamland-fix'><a href='${ctx}/watch?cid="+this.id+"'>"+this.title+"</a> <span class='bar-read'>评论 ("+this.commentNum+")</span>"
+                          +"<span class='bar-commend'>"+this.upvote+"人阅读</span><hr/></li>";
+                      startHtml = startHtml + contHtml;
+                  });
+                var okHtml = startHtml + endHtml;
 
-                        //分页
-                        var stPageHtml = " <ul id='release-dreamland-fy' class='pager pager-loose'>";
-                        if(pageCate.pageNum<=1){
-                            stPageHtml = stPageHtml + " <li class='previous'><a href='javascript:void(0);'>« 上一页</a></li>";
-                        }else if(pageCate.pageNum>1){
-                            var num = parseInt(pageCate.pageNum) -1;
-                            stPageHtml = stPageHtml + "<li class='previous'><a onclick='changeToActive("+ulist_id+",\""+category+"\","+num+")'>« 上一页</a></li>";
-                        }
-
-                        var foHtml = "";
-                        for(var i = 1 ;i<= pageCate.pages;i++){
-                            if(pageCate.pageNum==i){
-                                foHtml = foHtml+ "<li class='active'><a href='javascript:void(0);'>"+i+"</a></li>";
-                            }else{
-                                foHtml = foHtml+ "<li ><a onclick='changeToActive("+ulist_id+",\""+category+"\","+i+")'>"+i+"</a></li>";
-                            }
-                        }
-
-                        var teHtml = "";
-                        if(pageCate.pageNum>=pageCate.pages){
-                            teHtml = " <li><a href='javascript:void(0);'>下一页 »</a></li>";
-                        }else if(pageCate.pageNum<pageCate.pages){
-                            var num = parseInt(pageCate.pageNum) + 1;
-                            teHtml = "<li><a onclick='changeToActive("+ulist_id+",\""+category+"\","+num+")'>下一页 »</a></li>";
-                        }
-                        var endPageHtml = "</ul>";
-
-                        var pageOkHtml = stPageHtml + foHtml + teHtml +endPageHtml;
-                    }
-
-                    $("#release-dreamland").append(okHtml);
-                    $("#release-dreamland-div").append(pageOkHtml);
+                //分页
+                var stPageHtml = " <ul id='release-dreamland-fy' class='pager pager-loose'>";
+                if(pageCate.pageNum<=1){
+                    stPageHtml = stPageHtml + " <li class='previous'><a href='javascript:void(0);'>« 上一页</a></li>";
+                }else if(pageCate.pageNum>1){
+                    var num = parseInt(pageCate.pageNum) -1;
+                    stPageHtml = stPageHtml + "<li class='previous'><a onclick='changeToActive("+ulist_id+",\""+category+"\","+num+")'>« 上一页</a></li>";
                 }
-            }
-        });
+
+                var foHtml = "";
+                for(var i = pageCate.startPage ;i<= pageCate.endPage;i++){
+                    if(pageCate.pageNum==i){
+                        foHtml = foHtml+ "<li class='active'><a href='javascript:void(0);'>"+i+"</a></li>";
+                    }else{
+                        foHtml = foHtml+ "<li ><a onclick='changeToActive("+ulist_id+",\""+category+"\","+i+")'>"+i+"</a></li>";
+                    }
+                }
+
+                 var teHtml = "";
+                 if(pageCate.pageNum>=pageCate.pages){
+                     teHtml = " <li><a href='javascript:void(0);'>下一页 »</a></li>";
+                 }else if(pageCate.pageNum<pageCate.pages){
+                     var num = parseInt(pageCate.pageNum) + 1;
+                         teHtml = "<li><a onclick='changeToActive("+ulist_id+",\""+category+"\","+num+")'>下一页 »</a></li>";
+                 }
+                var endPageHtml = "</ul>";
+
+               var pageOkHtml = stPageHtml + foHtml + teHtml +endPageHtml;
+               }
+
+               $("#release-dreamland").append(okHtml);
+               $("#release-dreamland-div").append(pageOkHtml);
+           }
+           }
+
+       });
+   }
+    //发布梦点击事件
+    function release_dreamland() {
+        document.getElementById("fa-dreamland").style.backgroundColor = "#B22222";
+        document.getElementById("fa-span").style.color = "white";
+
+        document.getElementById("manage-dreamland").style.backgroundColor = "#F0F0F0";
+        document.getElementById("manage-span").style.color = "black";
+
+        document.getElementById("personal-div").style.backgroundColor = "#F0F0F0";
+        document.getElementById("personal-span").style.color = "black";
+
+        document.getElementById("release-dreamland").style.display = "";
+        document.getElementById("personal-dreamland").style.display = "none";
+        document.getElementById("update-dreamland").style.display = "none";
+
+    }
+    //管理梦点击事件
+    function manage_dreamland() {
+        document.getElementById("fa-dreamland").style.backgroundColor = "#F0F0F0";
+        document.getElementById("fa-span").style.color = "black";
+
+        document.getElementById("personal-div").style.backgroundColor = "#F0F0F0";
+        document.getElementById("personal-span").style.color = "black";
+
+        document.getElementById("manage-dreamland").style.backgroundColor = "#B22222";
+        document.getElementById("manage-span").style.color = "white";
+
+        document.getElementById("release-dreamland").style.display = "none";
+        document.getElementById("personal-dreamland").style.display = "none";
+        document.getElementById("update-dreamland").style.display = "";
+    }
+    //私密梦点击事件
+    function personal_dreamland() {
+        document.getElementById("fa-dreamland").style.backgroundColor = "#F0F0F0";
+        document.getElementById("fa-span").style.color = "black";
+
+        document.getElementById("personal-div").style.backgroundColor = "#B22222";
+        document.getElementById("personal-span").style.color = "white";
+
+        document.getElementById("manage-dreamland").style.backgroundColor = "#F0F0F0";
+        document.getElementById("manage-span").style.color = "black";
+
+        document.getElementById("release-dreamland").style.display = "none";
+        document.getElementById("personal-dreamland").style.display = "";
+        document.getElementById("update-dreamland").style.display = "none";
+
+
     }
 
     //管理梦分页点击事件
@@ -1070,8 +1139,8 @@
                     var endHtml = "</ul>";
                     if(ucList!=null) {
                         $(ucList).each(function () {
-                            var contHtml = " <li class='dreamland-fix'> <a>"+this.title+"</a> <span class='bar-delete'>删除</span>"
-                                +"<span class='bar-update'>修改</span><hr/></li>";
+                            var contHtml = " <li class='dreamland-fix'> <a href='${ctx}/watch?cid="+this.id+"'>"+this.title+"</a><a href='${ctx}/deleteContent?cid="+this.id+"'><span class='bar-delete'>删除</span></a>"
+                                +"<a href='${ctx}/writedream?cid="+this.id+"'><span class='bar-update'>修改</span></a><hr/></li>";
                             startHtml = startHtml + contHtml;
                         });
                         var okHtml = startHtml + endHtml;
@@ -1086,7 +1155,7 @@
                         }
 
                         var foHtml = "";
-                        for(var i = 1 ;i<= pageCate.pages;i++){
+                        for(var i = pageCate.startPage ;i<= pageCate.endPage;i++){
                             if(pageCate.pageNum==i){
                                 foHtml = foHtml+ "  <li class='active'><a href='javascript:void(0);'>"+i+"</a></li>";
                             }else{
@@ -1113,57 +1182,6 @@
         });
     }
 
-    //管理梦点击事件
-    function manage_dreamland() {
-        document.getElementById("fa-dreamland").style.backgroundColor = "#F0F0F0";
-        document.getElementById("fa-span").style.color = "black";
-
-        document.getElementById("personal-div").style.backgroundColor = "#F0F0F0";
-        document.getElementById("personal-span").style.color = "black";
-
-        document.getElementById("manage-dreamland").style.backgroundColor = "#B22222";
-        document.getElementById("manage-span").style.color = "white";
-
-        document.getElementById("release-dreamland").style.display = "none";
-        document.getElementById("personal-dreamland").style.display = "none";
-        document.getElementById("update-dreamland").style.display = "";
-    }
-
-    //发布梦点击事件
-    function release_dreamland() {
-        document.getElementById("fa-dreamland").style.backgroundColor = "#B22222";
-        document.getElementById("fa-span").style.color = "white";
-
-        document.getElementById("manage-dreamland").style.backgroundColor = "#F0F0F0";
-        document.getElementById("manage-span").style.color = "black";
-
-        document.getElementById("personal-div").style.backgroundColor = "#F0F0F0";
-        document.getElementById("personal-span").style.color = "black";
-
-        document.getElementById("release-dreamland").style.display = "";
-        document.getElementById("personal-dreamland").style.display = "none";
-        document.getElementById("update-dreamland").style.display = "none";
-
-    }
-
-    //私密梦点击事件
-    function personal_dreamland() {
-        document.getElementById("fa-dreamland").style.backgroundColor = "#F0F0F0";
-        document.getElementById("fa-span").style.color = "black";
-
-        document.getElementById("personal-div").style.backgroundColor = "#B22222";
-        document.getElementById("personal-span").style.color = "white";
-
-        document.getElementById("manage-dreamland").style.backgroundColor = "#F0F0F0";
-        document.getElementById("manage-span").style.color = "black";
-
-        document.getElementById("release-dreamland").style.display = "none";
-        document.getElementById("personal-dreamland").style.display = "";
-        document.getElementById("update-dreamland").style.display = "none";
-
-
-    }
-
     //私密梦分页点击事件
     function personTurnPage(pageNum) {
         $("ul").remove("#personal-dreamland-ul");
@@ -1183,8 +1201,8 @@
                     var endHtml = "</ul>";
                     if(ucList!=null) {
                         $(ucList).each(function () {
-                            var contHtml = " <li class='dreamland-fix'> <a>"+this.title+"</a> <span class='bar-delete'>删除</span>"
-                                +"<span class='bar-update'>修改</span><hr/></li>";
+                            var contHtml = " <li class='dreamland-fix'> <a href='${ctx}/watch?cid="+this.id+"'>"+this.title+"</a> <a href='${ctx}/deleteContent?cid="+this.id+"'><span class='bar-delete'>删除</span></a>"
+                                +"<a href='${ctx}/writedream?cid="+this.id+"'><span class='bar-update'>修改</span></a><hr/></li>";
                             startHtml = startHtml + contHtml;
                         });
                         var okHtml = startHtml + endHtml;
@@ -1199,7 +1217,7 @@
                         }
 
                         var foHtml = "";
-                        for(var i = 1 ;i<= pageCate.pages;i++){
+                        for(var i = pageCate.startPage ;i<= pageCate.endPage;i++){
                             if(pageCate.pageNum==i){
                                 foHtml = foHtml+ "  <li class='active'><a href='javascript:void(0);'>"+i+"</a></li>";
                             }else{
@@ -1226,11 +1244,72 @@
         });
     }
 
-    $(function () {
-        var val = "${manage}";
-        if(val=="manage"){
-            manage_dreamland();
-        }
-    });
+    //热梦推荐分页点击事件
+    function hotTurnPage(pageNum) {
+        $("ul").remove("#hot-dreamland-ul");
+        $("ul").remove("#hot-dreamland-fy");
+        $.ajax({
+            type: 'post',
+            url: '/findAllHotContents',
+            data: {"pageNum": pageNum},
+            dataType: 'json',
+            success: function (data) {
+                var pageCate = data["hotPage"];
+                if(pageCate=="fail"){
+                    window.location.href = "/login.jsp";
+                }else{
+                    var ucList = pageCate.result;
+                    var startHtml = " <ul style='font-size: 12px' id='hot-dreamland-ul'>";
+                    var endHtml = "</ul>";
+                    if(ucList!=null) {
+                        $(ucList).each(function () {
+                            var contHtml = " <li class='dreamland-fix'> <a href='${ctx}/watch?cid="+this.id+"'>"+this.title+"</a> <a href='${ctx}/deleteContent?cid="+this.id+"'><span class='bar-delete'>删除</span></a>"
+                                +"<a href='${ctx}/writedream?cid="+this.id+"'><span class='bar-update'>修改</span></a><hr/></li>";
+                            startHtml = startHtml + contHtml;
+                        });
+                        var okHtml = startHtml + endHtml;
+
+                        //分页
+                        var stPageHtml = "<ul class='pager pager-loose' id='hot-dreamland-fy'>";
+                        if(pageCate.pageNum<=1){
+                            stPageHtml = stPageHtml + "  <li class='previous'><a href='javascript:void(0);'>« 上一页</a></li>";
+                        }else if(pageCate.pageNum>1){
+                            var num = parseInt(pageCate.pageNum) -1;
+                            stPageHtml = stPageHtml + "<li class='previous'><a onclick='hotTurnPage("+num+")'>« 上一页</a></li>";
+                        }
+
+                        var foHtml = "";
+                        for(var i = pageCate.startPage ;i<= pageCate.endPage;i++){
+                            if(pageCate.pageNum==i){
+                                foHtml = foHtml+ "  <li class='active'><a href='javascript:void(0);'>"+i+"</a></li>";
+                            }else{
+                                foHtml = foHtml+ "<li ><a onclick='hotTurnPage("+i+")'>"+i+"</a></li>";
+                            }
+                        }
+
+                        var teHtml = "";
+                        if(pageCate.pageNum>=pageCate.pages){
+                            teHtml = " <li><a href='javascript:void(0);'>下一页 »</a></li>";
+                        }else if(pageCate.pageNum<pageCate.pages){
+                            var num = parseInt(pageCate.pageNum) + 1;
+                            teHtml = "<li><a onclick='hotTurnPage("+num+")'>下一页 »</a></li>";
+                        }
+                        var endPageHtml = "</ul>";
+
+                        var pageOkHtml = stPageHtml + foHtml + teHtml +endPageHtml;
+                    }
+
+                    $("#hot-dreamland").append(okHtml);
+                    $("#hot-dreamland-div").append(pageOkHtml);
+                }
+            }
+        });
+    }
+    function changeBackColor() {
+        $(".glyphicon-edit").css("color","blue");
+    }
+    function back2color() {
+        $(".glyphicon-edit").css("color", "black");
+    }
 </script>
 </html>

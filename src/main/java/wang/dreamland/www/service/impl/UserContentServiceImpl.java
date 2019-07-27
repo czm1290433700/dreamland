@@ -117,4 +117,16 @@ public class UserContentServiceImpl implements UserContentService {
     public void deleteById(Long cid) {
         userContentMapper.deleteByPrimaryKey(cid);
     }
+
+    @Override
+    public Page<UserContent> findAll(Integer pageNum, Integer pageSize) {
+        //分页查询
+        PageHelper.startPage(pageNum, pageSize);//开始分页
+        Example e = new Example(UserContent.class);
+        e.setOrderByClause("rpt_time DESC");
+        List<UserContent> list =  userContentMapper.selectByExample(e);
+        Page endPage = PageHelper.endPage();//分页结束
+        return endPage;
+    }
+
 }

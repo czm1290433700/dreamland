@@ -86,7 +86,7 @@ public class PageHelper implements Interceptor {
 			// 重设分页参数里的总页数等
 			setPageParameter(sql, connection, mappedStatement, boundSql, page);
 
-			System.out.println("totalmao:" + page.getPages());
+			System.out.println("total:" + page.getPages());
 
 			// 如果当前页大于总页数，则等于总页数
 			if (page.getPageNum() > page.getPages()) {
@@ -313,7 +313,51 @@ public class PageHelper implements Interceptor {
 			return total;
 		}
 
+		private int startPage;//开始页码（按钮上的数字）
+		private int endPage;//结束页码（按钮上的数字）
+
+		public int getStartPage() {
+			return startPage;
+		}
+
+		public void setStartPage(int startPage) {
+			this.startPage = startPage;
+		}
+
+		public int getEndPage() {
+			return endPage;
+		}
+
+		public void setEndPage(int endPage) {
+			this.endPage = endPage;
+		}
 		public void setTotal(long total) {
+			//计算总页码数：
+			int totalCount = Integer.parseInt(total+"");
+			pages=(totalCount+pageSize-1)/pageSize;
+			//计算页面的页码中“显示”的起始页码和结束页码
+			//一般显示的页码较好的效果是最多显示10个页码
+			//算法是前5后4，不足补10
+			//计算显示的起始页码（根据当前页码计算）：当前页码-5
+			startPage = pageNum - 5;
+			if(startPage < 1){
+				startPage = 1;//页码修复
+			}
+
+			//计算显示的结束页码（根据开始页码计算）：开始页码+9
+			endPage = startPage + 9;
+			if(endPage > pages){//页码修复
+				endPage = pages;
+			}
+
+			//起始页面重新计算（根据结束页码计算）：结束页码-9
+			startPage = endPage - 9;
+			if(startPage < 1){
+				startPage = 1;//页码修复
+			}
+
+			System.out.println(startPage +"和" +endPage);
+
 			this.total = total;
 		}
 
