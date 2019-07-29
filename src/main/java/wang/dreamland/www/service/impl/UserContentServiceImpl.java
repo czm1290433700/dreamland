@@ -43,8 +43,7 @@ public class UserContentServiceImpl implements UserContentService {
         System.out.println("第"+pageNum+"页");
         System.out.println("每页显示："+pageSize+"条");
         PageHelper.startPage(pageNum, pageSize);//开始分页
-        List<UserContent> list =  userContentMapper.select( content );
-        //List<UserContent> list = userContentMapper.findAllContent();
+        List<UserContent> list = userContentMapper.findByJoin(content);
         Page endPage = PageHelper.endPage();//分页结束
         List<UserContent> result = endPage.getResult();
         return endPage;
@@ -73,10 +72,16 @@ public class UserContentServiceImpl implements UserContentService {
         return endPage;
     }
 
+    //根据文章id查询
     public UserContent findById(long id) {
         UserContent userContent = new UserContent();
         userContent.setId( id );
-        return userContentMapper.selectOne( userContent );
+        List<UserContent> list = userContentMapper.findByJoin(userContent);
+        if(list!=null && list.size()>0){
+            return list.get(0);
+        }else {
+            return null;
+        }
     }
 
     public void updateById(UserContent content) {
@@ -122,9 +127,7 @@ public class UserContentServiceImpl implements UserContentService {
     public Page<UserContent> findAll(Integer pageNum, Integer pageSize) {
         //分页查询
         PageHelper.startPage(pageNum, pageSize);//开始分页
-        Example e = new Example(UserContent.class);
-        e.setOrderByClause("rpt_time DESC");
-        List<UserContent> list =  userContentMapper.selectByExample(e);
+        List<UserContent> list = userContentMapper.findByJoin(null);
         Page endPage = PageHelper.endPage();//分页结束
         return endPage;
     }
