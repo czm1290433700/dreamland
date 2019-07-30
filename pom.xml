@@ -345,6 +345,11 @@
       <artifactId>dayu-sdk-dysmsapi</artifactId>
       <version>1.0.0</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.solr</groupId>
+      <artifactId>solr-solrj</artifactId>
+      <version>7.3.0</version>
+    </dependency>
   </dependencies>
 
   <build>

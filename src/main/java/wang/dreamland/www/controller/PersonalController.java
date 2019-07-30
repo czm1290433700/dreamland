@@ -127,6 +127,9 @@ public class PersonalController extends BaseController{
 
     @Autowired
     private UpvoteService upvoteService;
+
+    @Autowired
+    private SolrService solrService;
     @RequestMapping("/deleteContent")
     public String deleteContent(Model model, @RequestParam(value = "cid",required = false) Long cid) {
 
@@ -137,6 +140,7 @@ public class PersonalController extends BaseController{
         //还未实现
         //commentService.deleteByContentId(cid);
         //upvoteService.deleteByContentId(cid);
+        solrService.deleteById(cid);
         userContentService.deleteById(cid);
         return "redirect:/list?manage=manage";
     }

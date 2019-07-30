@@ -12,7 +12,8 @@
     <param-value>
       classpath*:spring-mybatis.xml,
       classpath*:applicationContext-redis.xml,
-      classpath*:applicationContext-activemq.xml
+      classpath*:applicationContext-activemq.xml,
+      classpath:applicationContext-solr.xml
     </param-value>
   </context-param>
 

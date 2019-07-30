@@ -15,10 +15,7 @@ import wang.dreamland.www.entity.Comment;
 import wang.dreamland.www.entity.Upvote;
 import wang.dreamland.www.entity.User;
 import wang.dreamland.www.entity.UserContent;
-import wang.dreamland.www.service.CommentService;
-import wang.dreamland.www.service.UpvoteService;
-import wang.dreamland.www.service.UserContentService;
-import wang.dreamland.www.service.UserService;
+import wang.dreamland.www.service.*;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -41,18 +38,25 @@ public class IndexJspController extends BaseController {
     private CommentService commentService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private SolrService solrService;
     @RequestMapping("/index_list")
-    public String findAllList(Model model, @RequestParam(value = "id",required = false) String id ,
-                                    @RequestParam(value = "pageNum",required = false) Integer pageNum ,
-                                    @RequestParam(value = "pageSize",required = false) Integer pageSize) {
-
-         log.info( "===========进入index_list=========" );
+    public String findAllList(Model model, @RequestParam(value = "keyword",required = false) String keyword,
+                              @RequestParam(value = "pageNum",required = false) Integer pageNum ,
+                              @RequestParam(value = "pageSize",required = false) Integer pageSize) {
+        log.info( "===========进入index_list=========" );
         User user = (User)getSession().getAttribute("user");
         if(user!=null){
             model.addAttribute( "user",user );
         }
-        Page<UserContent> page =  findAll(pageNum,  pageSize);
-        model.addAttribute( "page",page );
+        if(StringUtils.isNotBlank(keyword)){
+            Page<UserContent> page = solrService.findByKeyWords( keyword ,pageNum,pageSize);
+            model.addAttribute("keyword", keyword);
+            model.addAttribute("page", page);
+        }else {
+            Page<UserContent> page =  findAll(pageNum,pageSize);
+            model.addAttribute( "page",page );
+        }
         return "../index";
     }
 

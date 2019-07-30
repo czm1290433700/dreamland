@@ -2,6 +2,7 @@ package wang.dreamland.www.controller;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.omg.CORBA.PRIVATE_MEMBER;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,12 +10,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import wang.dreamland.www.entity.User;
 import wang.dreamland.www.entity.UserContent;
+import wang.dreamland.www.service.SolrService;
 import wang.dreamland.www.service.UserContentService;
 
 import java.util.Date;
 
 @Controller
 public class WriteController extends BaseController {
+    @Autowired
+    private SolrService solrService;
     private final static Logger log = Logger.getLogger(WriteController.class);
 
     /**
@@ -77,8 +81,11 @@ public class WriteController extends BaseController {
             userContent.setDownvote( 0 );
             userContent.setCommentNum( 0 );
             userContentService.addContent( userContent );
+            solrService.addUserContent(userContent);
+
         }else {
             userContentService.updateById(userContent);
+            solrService.updateUserContent(userContent);
         }
         model.addAttribute("content",userContent);
         return "write/writesuccess";
